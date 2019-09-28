@@ -55,6 +55,16 @@ require __DIR__ . "/vendor/autoload.php";
 
 ?>
 
+<?php
+$pdo = new PDO('mysql:host=127.0.0.1;dbname=rendu', "root", "");
+$type=$pdo->prepare('SELECT * FROM types');
+$type->execute();
+
+$data = $type->fetchAll(PDO::FETCH_OBJ);
+
+?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -78,25 +88,50 @@ require __DIR__ . "/vendor/autoload.php";
     <form action="" method="POST" class="form-group">
         <div class="form-group col-md-4">
             <label for="">Nom du personnage</label>
-            <input type="text" class="form-control" placeholder="Nom">
+            <input id="name" name="name" type="text" class="form-control" placeholder="Nom">
         </div>
 
         <div class="form-group col-md-4">
             <label for="">Attaque du personnage</label>
-            <input type="text" class="form-control" placeholder="Atk">
+            <input id="atk" name="atk" type="text" class="form-control" placeholder="Atk">
         </div>
         <div class="form-group col-md-4">
             <label for="">Pv du personnage</label>
-            <input type="text" class="form-control" placeholder="Pv">
+            <input id="pv" name="pv" type="text" class="form-control" placeholder="Pv">
         </div>
         <div class="form-group col-md-4">
             <label for="">Type</label>
-            <select name="" id="">
-                <option value="" selected disabled>Choissisez un type</option>
+            <select name="typer" id="typer">
+                <?php
+                foreach($data as $key => $value):
+                ;?>
+                <option value="<?php echo $value->name?>"><?php echo $value->name?>
+
+                    <?php endforeach; ?>
             </select>
         </div>
         <button class="btn btn-primary">Enregistrer</button>
     </form>
+
+    <?php
+    if (!empty($_POST["name"])) {
+        $nom = $_POST["name"];
+        $attaque = $_POST["atk"];
+        $pv = $_POST["pv"];
+        $typer = $_POST["typer"];
+        if ($typer == "Feu"){
+            $typer = 1;
+        }
+        if ($typer =="Eau"){
+            $typer = 2;
+        }
+        $send=$pdo->prepare("INSERT INTO personnage (name,atk,pv,type_id) VALUES ('$nom','$attaque','$pv','$typer')");
+        $send->execute();
+        echo "Le personnage ".$nom." à bien été créé !";
+    }
+
+    ?>
+
 </div>
 
 </body>
