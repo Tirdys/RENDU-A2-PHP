@@ -26,6 +26,13 @@ require __DIR__ . "/vendor/autoload.php";
 ## ETAPE 4
 # AFFICHER LE MSG "PERSONNAGE ($name) A GAGNER UNE ETOILES"
 
+$pdo = new PDO('mysql:host=127.0.0.1;dbname=rendu', "root", "");
+
+$personnages=$pdo->prepare("SELECT name,atk,pv,stars FROM personnage");
+$personnages->execute();
+
+$data = $personnages->fetchAll(PDO::FETCH_OBJ);
+
 ?>
 
 
@@ -47,6 +54,25 @@ require __DIR__ . "/vendor/autoload.php";
     <a href="./combat.php" class="nav-link">Combats</a>
 </nav>
 <h1>Mes personnages</h1>
+<?php
+foreach ($data as $key => $element){
+    ?> <br><button class="btn btn-primary">Stars</button> <?php
+$liste = $element->name;
+$atk = $element->atk;
+$pv = $element->pv;
+$stars = $element->stars;
+if ($stars == NULL) {
+    $stars = 0;
+}
+echo $liste. ", ".$atk. " d'attaque, ".$pv." PV et ".$stars." étoiles";
+
+}
+
+
+?>
+<br>
+
+
 <div class="w-100 mt-5">
 
 </div>
